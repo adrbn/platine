@@ -1,0 +1,74 @@
+name: Platine
+
+options:
+  bundleIdPrefix: com.adrbn.platine
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Ad-hoc by default so anyone can clone and build. `make install` signs with a
+    # Developer ID so macOS keeps the Automation permission across rebuilds.
+    CODE_SIGN_STYLE: Manual
+    PLATINE_CODE_SIGN_IDENTITY: "-"
+    PLATINE_DEVELOPMENT_TEAM: ""
+    CODE_SIGN_IDENTITY: "$(PLATINE_CODE_SIGN_IDENTITY)"
+    DEVELOPMENT_TEAM: "$(PLATINE_DEVELOPMENT_TEAM)"
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGNING_ALLOWED: "YES"
+
+targets:
+  Platine:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/Platine
+        excludes:
+          - Resources/Plates
+          - Resources/Cities
+      - path: Sources/Platine/Resources/Plates
+        type: folder
+        buildPhase: resources
+      - path: Sources/Platine/Resources/Cities
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.adrbn.platine
+        PRODUCT_NAME: Platine
+        INFOPLIST_FILE: Sources/Platine/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Sources/Platine/Platine.entitlements
+        ENABLE_HARDENED_RUNTIME: "YES"
+
+  PlatineTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/PlatineTests
+      - path: Sources/Platine/Record/LPLayout.swift
+      - path: Sources/Platine/Record/TonearmGeometry.swift
+      - path: Sources/Platine/Record/TurntableMotion.swift
+      - path: Sources/Platine/Scene/DayCycle.swift
+      - path: Sources/Platine/Scene/PlateSchedule.swift
+      - path: Sources/Platine/Environment/Sun.swift
+      - path: Sources/Platine/Players/PlayerParsing.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.adrbn.platine.tests
+        GENERATE_INFOPLIST_FILE: "YES"
+
+schemes:
+  Platine:
+    build:
+      targets:
+        Platine: all
+        PlatineTests: [test]
+    test:
+      targets:
+        - PlatineTests

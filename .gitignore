@@ -1,0 +1,7 @@
+build/
+Platine.xcodeproj/
+render/assets/
+render/out/
+docs/snapshots/
+__pycache__/
+.DS_Store
