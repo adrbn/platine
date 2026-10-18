@@ -18,7 +18,8 @@ final class WallpaperWindow: NSWindow {
         isExcludedFromWindowsMenu = true
         animationBehavior = .none
         isReleasedWhenClosed = false
-        level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopWindow)))
+        // Just under the icons: macOS 27 lays a wallpaper-drawing backdrop over the desktop level.
+        level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) - 1)
         collectionBehavior = Self.desktopBehavior
         setFrame(screen.frame, display: false)
     }
